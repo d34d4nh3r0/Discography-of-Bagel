@@ -1,3 +1,5 @@
+import os
+
 class Base97Generator:
     def __init__(self, seed):
         self.state = seed % 2147483647  # 2**31 - 1
@@ -41,8 +43,13 @@ sequence = generator.generate()
 # Display the sequence just in case
 print(sequence)
 
-# Create a file and write the output
-with open(f"{seed}.txt", "w") as file:
+# Create a subfolder if it doesn't exist
+subfolder = r"C:\Users\d34d4\PycharmProjects\Discography of Babel\outputs"
+if not os.path.exists(subfolder):
+    os.makedirs(subfolder)
+
+# Create a file in the subfolder and write the output
+with open(os.path.join(subfolder, f"{seed}.txt"), "w") as file:
     file.write(f'Project Version="4.1.3" TempoMode="FamiStudio" Name="{seed}" Author="Discography of Babel"\n')
     file.write('\tInstrument Name="Instrument 1"\n')
     file.write('\t\tEnvelope Type="Volume" Length="5" Values="15,10,5,1,0"\n')
