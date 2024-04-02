@@ -26,87 +26,148 @@ notes = {'0': '0', '1': 'C0', '2': 'C#0', '3': 'D0', '4': 'D#0', '5': 'E0', '6':
          '81': 'G#6', '82': 'A6', '83': 'A#6', '84': 'B6', '85': 'C7', '86': 'C#7', '87': 'D7', '88': 'D#7',
          '89': 'E7', '90': 'F7', '91': 'F#7', '92': 'G7', '93': 'G#7', '94': 'A7', '95': 'A#7', '96': 'B7'}
 
+# Inputting 0 in a seed will create an empty channel
+# Get seed for Square1
 while True:
-    seed_input = input("Enter the seed value: ")
+    seed_input1 = input("Enter the seed value for Square1: ")
     try:
         # Try converting the input to an integer
-        seed = int(seed_input)
+        seedSquare1 = int(seed_input1)
         break  # Break out of the loop if conversion is successful
     except ValueError:
         # If conversion fails, print an error message and continue the loop
         print("Please enter a valid integer.")
 
-# Generate the song
-generator = Base97Generator(seed)
-sequence = generator.generate()
+# Get seed for Square2
+while True:
+    seed_input2 = input("Enter the seed value for Square2: ")
+    try:
+        # Try converting the input to an integer
+        seedSquare2 = int(seed_input2)
+        break  # Break out of the loop if conversion is successful
+    except ValueError:
+        # If conversion fails, print an error message and continue the loop
+        print("Please enter a valid integer.")
 
-# Display the sequence just in case
-print(sequence)
+# Get seed for Triangle
+while True:
+    seed_input3 = input("Enter the seed value for Triangle: ")
+    try:
+        # Try converting the input to an integer
+        seedTriangle = int(seed_input3)
+        break  # Break out of the loop if conversion is successful
+    except ValueError:
+        # If conversion fails, print an error message and continue the loop
+        print("Please enter a valid integer.")
 
-# Create a subfolder if it doesn't exist
-subfolder = r"C:\Users\d34d4\PycharmProjects\Discography of Babel\outputs"
-if not os.path.exists(subfolder):
-    os.makedirs(subfolder)
+# Get seed for Noise
+while True:
+    seed_input4 = input("Enter the seed value for Noise: ")
+    try:
+        # Try converting the input to an integer
+        seedNoise = int(seed_input4)
+        break  # Break out of the loop if conversion is successful
+    except ValueError:
+        # If conversion fails, print an error message and continue the loop
+        print("Please enter a valid integer.")
+
+
+# Generate the sequence for each channel
+generator = Base97Generator(seedSquare1)
+sequenceSquare1 = generator.generate()
+
+generator = Base97Generator(seedSquare2)
+sequenceSquare2 = generator.generate()
+
+generator = Base97Generator(seedTriangle)
+sequenceTriangle = generator.generate()
+
+generator = Base97Generator(seedNoise)
+sequenceNoise = generator.generate()
+
+# Display the sequence just in case someone can read music
+print(sequenceSquare1)
+print(sequenceSquare2)
+print(sequenceTriangle)
+print(sequenceNoise)
+
+# Relative path to the subfolder
+subfolder = "outputs"
+
+# Get the current working directory
+current_directory = os.getcwd()
+
+# Join the current directory with the subfolder path
+subfolder_path = os.path.join(current_directory, subfolder)
+
+# Create the subfolder if it doesn't exist
+if not os.path.exists(subfolder_path):
+    os.makedirs(subfolder_path)
 
 # Create a file in the subfolder and write the output
-with open(os.path.join(subfolder, f"{seed}.txt"), "w") as file:
-    file.write(f'Project Version="4.1.3" TempoMode="FamiStudio" Name="{seed}" Author="Discography of Babel"\n')
+# Using four instruments to allow for instrument selection during MIDI creation
+# Each channel uses 1 instrument
+with open(os.path.join(subfolder_path, f"{seedSquare1}, {seedSquare2}, {seedTriangle}, {seedNoise}.txt"), "w") as file:
+    file.write(f'Project Version="4.1.3" TempoMode="FamiStudio" Name="{seedSquare1}, {seedSquare2}, {seedTriangle}, '
+               f'{seedNoise}" Author="Discography of Babel"\n')
     file.write('\tInstrument Name="Instrument 1"\n')
     file.write('\t\tEnvelope Type="Volume" Length="5" Values="15,10,5,1,0"\n')
     file.write('\t\tEnvelope Type="DutyCycle" Length="1" Values="1"\n')
-    file.write(f'\tSong Name="Song {seed}" Length="16" LoopPoint="0" PatternLength="16" BeatLength="4" NoteLength="10" Groove="10" GroovePaddingMode="Middle"\n')
-    file.write('\t\tChannel Type="Square1"\n')
+    file.write('\tInstrument Name="Instrument 2"\n')
+    file.write('\t\tEnvelope Type="Volume" Length="5" Values="15,10,5,1,0"\n')
+    file.write('\t\tEnvelope Type="DutyCycle" Length="1" Values="1"\n')
+    file.write('\tInstrument Name="Instrument 3"\n')
+    file.write('\t\tEnvelope Type="Volume" Length="5" Values="15,10,5,1,0"\n')
+    file.write('\t\tEnvelope Type="DutyCycle" Length="1" Values="1"\n')
+    file.write('\tInstrument Name="Instrument 4"\n')
+    file.write('\t\tEnvelope Type="Volume" Length="5" Values="15,10,5,1,0"\n')
+    file.write('\t\tEnvelope Type="DutyCycle" Length="1" Values="1"\n')
+    file.write(f'\tSong Name="Song {seedSquare1}, {seedSquare2}, {seedTriangle}, {seedNoise}" Length="16" LoopPoint="0"'
+               f' PatternLength="16" BeatLength="4" NoteLength="10" Groove="10" GroovePaddingMode="Middle"\n')
 
+    file.write('\t\tChannel Type="Square1"\n')
     pattern_num = 1
-    for i in range(0, len(sequence), 16):
+    for i in range(0, len(sequenceSquare1), 16):
         file.write(f'\t\t\tPattern Name="Pattern {pattern_num}"\n')
-        for j, note in enumerate(sequence[i:i + 16]):
+        for j, note in enumerate(sequenceSquare1[i:i + 16]):
             if note != '0':  # Check if note is not equal to '0'
                 file.write(f'\t\t\t\tNote Time="{j * 10}" Value="{note}" Duration="10" Instrument="Instrument 1"\n')
         pattern_num += 1
-
     for i in range(16):
         file.write(f'\t\t\tPatternInstance Time="{i}" Pattern="Pattern {i + 1}"\n')
 
     file.write('\t\tChannel Type="Square2"\n')
-
     pattern_num = 1
-    for i in range(0, len(sequence), 16):
+    for i in range(0, len(sequenceSquare2), 16):
         file.write(f'\t\t\tPattern Name="Pattern {pattern_num}"\n')
-        for j, note in enumerate(sequence[i:i + 16]):
+        for j, note in enumerate(sequenceSquare2[i:i + 16]):
             if note != '0':  # Check if note is not equal to '0'
-                file.write(f'\t\t\t\tNote Time="{j * 10}" Value="{note}" Duration="10" Instrument="Instrument 1"\n')
+                file.write(f'\t\t\t\tNote Time="{j * 10}" Value="{note}" Duration="10" Instrument="Instrument 2"\n')
         pattern_num += 1
-
     for i in range(16):
         file.write(f'\t\t\tPatternInstance Time="{i}" Pattern="Pattern {i + 1}"\n')
 
     file.write('\t\tChannel Type="Triangle"\n')
-
     pattern_num = 1
-    for i in range(0, len(sequence), 16):
+    for i in range(0, len(sequenceTriangle), 16):
         file.write(f'\t\t\tPattern Name="Pattern {pattern_num}"\n')
-        for j, note in enumerate(sequence[i:i + 16]):
+        for j, note in enumerate(sequenceTriangle[i:i + 16]):
             if note != '0':  # Check if note is not equal to '0'
-                file.write(f'\t\t\t\tNote Time="{j * 10}" Value="{note}" Duration="10" Instrument="Instrument 1"\n')
+                file.write(f'\t\t\t\tNote Time="{j * 10}" Value="{note}" Duration="10" Instrument="Instrument 3"\n')
         pattern_num += 1
-
     for i in range(16):
         file.write(f'\t\t\tPatternInstance Time="{i}" Pattern="Pattern {i + 1}"\n')
 
     file.write('\t\tChannel Type="Noise"\n')
-
     pattern_num = 1
-    for i in range(0, len(sequence), 16):
+    for i in range(0, len(sequenceNoise), 16):
         file.write(f'\t\t\tPattern Name="Pattern {pattern_num}"\n')
-        for j, note in enumerate(sequence[i:i + 16]):
+        for j, note in enumerate(sequenceNoise[i:i + 16]):
             if note != '0':  # Check if note is not equal to '0'
-                file.write(f'\t\t\t\tNote Time="{j * 10}" Value="{note}" Duration="10" Instrument="Instrument 1"\n')
+                file.write(f'\t\t\t\tNote Time="{j * 10}" Value="{note}" Duration="10" Instrument="Instrument 4"\n')
         pattern_num += 1
-
     for i in range(16):
         file.write(f'\t\t\tPatternInstance Time="{i}" Pattern="Pattern {i + 1}"\n')
 
+# DPCM channel unused
     file.write('\t\tChannel Type="DPCM"')
-
-    # Testing Git change
