@@ -101,3 +101,5 @@ with open(f"{seed}.txt", "w") as file:
         file.write(f'\t\t\tPatternInstance Time="{i}" Pattern="Pattern {i + 1}"\n')
 
     file.write('\t\tChannel Type="DPCM"')
+
+    # Testing Git change
