@@ -96,6 +96,8 @@ def controlled_file_create(notes_per_beat, duration, channel_1_seed, channel_1_s
         # DPCM channel unused
         file.write('\t\tChannel Type="DPCM"')
 
+        print(f"{channel_1_seed}, {channel_2_seed}, {channel_3_seed}, {channel_4_seed}.txt created.")
+
 
 def chaos_file_create(channel_1_seed, channel_1_sequence, channel_2_seed, channel_2_sequence, channel_3_seed,
                       channel_3_sequence, channel_4_seed, channel_4_sequence):
@@ -228,3 +230,5 @@ def chaos_file_create(channel_1_seed, channel_1_sequence, channel_2_seed, channe
 
         # DPCM channel unused
         file.write('\t\tChannel Type="DPCM"')
+
+        print(f"{channel_1_seed}, {channel_2_seed}, {channel_3_seed}, {channel_4_seed}.txt created.")
